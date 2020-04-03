@@ -4,14 +4,14 @@
 1. Download the project 
 2. Craete a databse to your localhost 
 3. Database name is "todo_with_laravel"
-4. Open command line to the project directory 
+4. Open command line to the project directory run
 
-    run php artisan migrate
+    php artisan serve
     
 it will create users and todos table
 then run 
 
-    run php artisan serve
+    php artisan serve
 
 
 # if you have any problem update your npm
