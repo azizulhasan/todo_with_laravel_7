@@ -1,0 +1,54 @@
+
+    
+    input.form-control-lg {
+    border: none;
+    border-bottom: 2px solid silver;
+    border-radius: 0;
+    height: 50px;
+    }
+    input#edit_title{
+    border: none;
+    border-radius: 0;
+    font-size: 20px;
+    color: black;
+    background: #fff;
+    }
+    p#edit_text{
+        font-size: 20px;
+        color: black;
+    }
+    .todo_item_box h1{
+        font-size: 66px;
+        color:#f55d42;
+        opacity: .3;
+    }
+    #todo_item{
+        background: #fff;
+        box-shadow:
+        0 1px 1px rgba(0,0,0,0.15), /* The top layer shadow */
+        0 10px 0 -5px #eee, /* The second layer */
+        0 10px 1px -4px rgba(0,0,0,0.15), /* The second layer shadow */
+        0 20px 0 -10px #eee, /* The third layer */
+        0 20px 1px -9px rgba(0,0,0,0.15); /* The third layer shadow */
+    }
+    #show_hide{display: none; }
+    .completed_task{display: none;}
+    .clear_completed_task{visibility: hidden;}
+     .active_color button{color:#228B22; font-weight: bold}
+     button.delete_todo {
+        display: none;
+       
+    }
+    div.col-3 button.clear_completed_task {
+        float: left;
+        text-align: conter;
+        width: 170px;
+    }
+   
+    div.form-check input{display: none}
+
+     div.single_row div.row:hover div button.delete_todo,
+    div.single_row div.row:hover div.form-check input{
+        display: block;
+    }
+    

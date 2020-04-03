@@ -14,7 +14,7 @@ $(document).ready(function () {
     $('#title').keydown(function(e) {
     var key = e.which;
     if (key == 13) {
-    // e.prevendivefault();
+    e.preventDefault();
         $.ajax({
           data: {"title": $(this).val()},
           url: ""+'/store',
@@ -24,30 +24,27 @@ $(document).ready(function () {
               $("#title").val("");
               html = '';
               html +=`
-              <div class="col-12 active_task single_row" serial="${data.id}">
-              <div class="row">
-                    <div class="col-1">
-                        <div class="form-check">
-                        <input data-id="${data.id}" class="form-check-input" type="checkbox" name="completed" id="completed"  >
-                        </div>
-                    </div>
-                        <div class="col-10" id=" edit_todo" >
+              <tr class="active_task" serial="${data.id}">   <td>
+                             <div class="form-check">
+                                <input data-id="${data.id}" class="form-check-input" type="checkbox" name="completed" id="completed"  >
+                                </div>
+                        </td>
+                        <td id="edit_todo" colspan="2">
                             <p id="edit_text"  data-id="${data.id}">${data.title}</p>
                             <div class="form-group">
                             <input data-id="${data.id}" class="form-control" type="text" name="title" hidden id="edit_title" value="${data.title}"  >
                             </div>
-                        </div>
-                        <div class="col-1">
+                        </td>
+                        <td>
                             <button type="button" data-id="${data.id}" class="delete_todo" aria-label="Close">
-                                <span aria-hidden="divue">&times;</span>
+                                <span aria-hidden="true">&times;</span>
                               </button>
-                         </div>
-                    </div>
-                </div>
+                        </td>
+                    </tr>
               `;
-              $("#todo_item div.todo_body").prepend(html)
-              let itemLeft= $("#todo_item div.todo_body div.active_task").length;
-              count_div_item(itemLeft, 'left');
+              $("#todo_item tbody").prepend(html)
+              let itemLeft= $("#todo_item tbody tr.active_task").length;
+              count_tr_item(itemLeft, 'left');
               
           },
           error: function (data) {
@@ -65,13 +62,13 @@ $(document).ready(function () {
     
     $('#todo_item').on('keydown', '#edit_title', function (e) {
         var todo_id = $(this).data('id');
-       var title=  $(this).closest("div.single_row").find("#edit_title").val();
-       var p_text=  $(this).closest("div.single_row").find("#edit_text");
-       var edited_title=  $(this).closest("div.single_row").find("#edit_title");
+       var title=  $(this).closest("tr").find("#edit_title").val();
+       var p_text=  $(this).closest("tr").find("#edit_text");
+       var edited_title=  $(this).closest("tr").find("#edit_title");
     
         var key = e.which;
         if (key == 13) {
-        // e.prevendivefault();
+        e.preventDefault();
                 $.ajax({
                 data: {
                     'id':{'id':todo_id,"title":title},
@@ -99,15 +96,15 @@ $(document).ready(function () {
     */
     $('#todo_item').on('click', '.delete_todo ', function (e) {
         var todo_id = $(this).data('id');
-        var remove_div = $(this).closest('div.single_row');      
+        var remove_tr = $(this).closest('tr');      
         $.ajax({
             type: "post",
             url: ""+'/deletetod/'+todo_id,
             success: function (data) {
                 if(data){  
-                    let itemLeft= $("#todo_item div.todo_body div.active_task").length;
-                    count_div_item((itemLeft-1), "left")
-                    $(remove_div).remove();
+                    let itemLeft= $("#todo_item tbody tr.active_task").length;
+                    count_tr_item((itemLeft-1), "left")
+                    $(remove_tr).remove();
                 }
             },
             error: function (data) {
@@ -131,8 +128,8 @@ $(document).ready(function () {
             success: function (data) {
                 if(data){
                     $(completed_task).remove();
-                    let itemLeft= $("#todo_item div.todo_body div.active_task").length;
-                    count_div_item(itemLeft, "left");
+                    let itemLeft= $("#todo_item tbody tr.active_task").length;
+                    count_tr_item(itemLeft, "left");
                     if(itemLeft){
                         $(".clear_completed_task").css('visibility','visible')
                     }else{
@@ -153,26 +150,13 @@ $(document).ready(function () {
     |
     */
     $("#todo_item").on("click", "#edit_todo", function(){
-        $(this).closest("div.single_row").find("#edit_text").hide()
-        $(this).closest("div.single_row").find("#edit_title").removeAttr('hidden') 
-        $(this).closest("div.single_row").find("#edit_title").focus()
+        $(this).closest("tr").find("#edit_text").hide()
+        $(this).closest("tr").find("#edit_title").removeAttr('hidden') 
+        $(this).closest("tr").find("#edit_title").focus()
     });
     $("#todo_item").on("focusout","#edit_todo",function(){
-        $(this).closest("div.single_row").find("#edit_text").hide()
-        $(this).closest("div.single_row").find("#edit_title").show() 
-    })
-
-
-    /*
-    |
-    | view all atcive task
-    |
-    */
-    $('.all_active_task').on("click",function(){
-        $(".active_task").show()
-        $(".completed_task").hide()
-        let itemLeft= $("#todo_item div.todo_body div.active_task").length;
-        count_div_item(itemLeft, 'active');
+        $(this).closest("tr").find("#edit_text").hide()
+        $(this).closest("tr").find("#edit_title").show() 
     })
        
     /*
@@ -184,22 +168,22 @@ $(document).ready(function () {
     $("#todo_item").on("click", "#completed", function(){
         if(!$(this).hasClass('active')){
             $(this).addClass('active')
-           $(this).closest("div.single_row").find("p").wrap('<del></del>')
-           $(this).closest("div.single_row").removeClass("active_task")
-           $(this).closest("div.single_row").addClass("completed_task")
-            com_id.push($(this).closest("div.single_row").attr('serial'))
-           let itemLeft= $("#todo_item div.todo_body div.active_task").length;
-            count_div_item(itemLeft , 'left'); 
+           $(this).closest("tr").find("p").wrap('<del></del>')
+           $(this).closest("tr").removeClass("active_task")
+           $(this).closest("tr").addClass("completed_task")
+            com_id.push($(this).closest("tr").attr('serial'))
+           let itemLeft= $("#todo_item tbody tr.active_task").length;
+            count_tr_item(itemLeft , 'left'); 
         $(".clear_completed_task").css('visibility','visible')
         }else{
             $(this).removeClass('active')
             if(!$(this).hasClass('active')){
-                $(this).closest("div.single_row").find("p").unwrap('<del></del>')
-                $(this).closest("div.single_row").removeClass("completed_task")
-                $(this).closest("div.single_row").addClass("active_task")
+                $(this).closest("tr").find("p").unwrap('<del></del>')
+                $(this).closest("tr").removeClass("completed_task")
+                $(this).closest("tr").addClass("active_task")
                 $(".active_task").hide()
-                let itemLeft= $("#todo_item div.todo_body div.completed_task").length;
-                count_div_item(itemLeft, 'left'); 
+                let itemLeft= $("#todo_item tbody tr.completed_task").length;
+                count_tr_item(itemLeft, 'left'); 
                 if(itemLeft){
                     $(".clear_completed_task").css('visibility','visible')
                 }else{
@@ -215,17 +199,27 @@ $(document).ready(function () {
     */
     
     $('.all_complete_task').on("click",function(){
-        if(!$(this).closest("div.single_row").hasClass('active_task')){
+        if(!$(this).closest("tr").hasClass('active_task')){
             $(".active_task").hide()
             $(".completed_task").show()
         }else{
             $(".active_task").hide()
             $(".completed_task").show()
         }
-        let itemLeft= $("#todo_item div.todo_body div.completed_task").length;
-        count_div_item(itemLeft, 'completed');
+        let itemLeft= $("#todo_item tbody tr.completed_task").length;
+        count_tr_item(itemLeft, 'completed');
     })
-    
+    /*
+    |
+    | view all atcive task
+    |
+    */
+    $('.all_active_task').on("click",function(){
+        $(".active_task").show()
+        $(".completed_task").hide()
+        let itemLeft= $("#todo_item tbody tr.active_task").length;
+        count_tr_item(itemLeft, 'active');
+    })
     /*
     |
     | view all  task
@@ -234,8 +228,8 @@ $(document).ready(function () {
     $('.all_task').on("click",function(){
         $(".active_task").show()
         $(".completed_task").show()
-        let itemLeft= $("#todo_item div.todo_body div.single_row").length;
-        count_div_item((itemLeft),''); 
+        let itemLeft= $("#todo_item tbody tr").length;
+        count_tr_item((itemLeft-1),''); 
     })
     
      /*
@@ -244,14 +238,13 @@ $(document).ready(function () {
     |
     */
     
-    $("#show_hide div.row [class*='col-']").click(function(){
-        if(!$("#show_hide div.row [class*='col-']").hasClass("active_color")){
+    $("#show_hide td").click(function(){
+        if(!$("#show_hide td").hasClass("active_color")){
             $(this).addClass("active_color")
         }else{
-            $("#show_hide div.row [class*='col-']").removeClass("active_color")
+            $("#show_hide td").removeClass("active_color")
             $(this).addClass("active_color")
         }
-       
     }) 
     
     
@@ -260,17 +253,17 @@ $(document).ready(function () {
     | Count active todos
     |
     */
-    function count_div_item(itemLeft , sdiving){
+    function count_tr_item(itemLeft , string){
         if(itemLeft){
         $('#show_hide').css("display", "block");
-        $("#count_div").html( itemLeft  +" item "+sdiving)
+        $("#count_tr").html( itemLeft  +" item "+string)
         }else{
-            $("#count_div").html(  0 +" item "+sdiving)
+            $("#count_tr").html(  0 +" item "+string)
         }
     }  
     
-    let itemLeft= $("#todo_item div.todo_body div.active_task").length;
-    count_div_item(itemLeft, 'left'); 
+    let itemLeft= $("#todo_item tbody tr.active_task").length;
+    count_tr_item(itemLeft, 'left'); 
     });
     })
     
