@@ -5,9 +5,12 @@
 2. Craete a databse to your localhost 
 3. Database name is "todo_with_laravel"
 4. Open command line to the project directory 
+
     run php artisan migrate
+    
 it will create users and todos table
 then run 
+
     run php artisan serve
 
 
